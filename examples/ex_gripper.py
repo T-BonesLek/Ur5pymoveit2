@@ -13,7 +13,7 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
 from pymoveit2 import GripperInterface
-from pymoveit2.robots import panda
+from Ur5pymoveit2.pymoveit2.robots import ur5
 
 
 def main():
@@ -34,10 +34,10 @@ def main():
     # Create gripper interface
     gripper_interface = GripperInterface(
         node=node,
-        gripper_joint_names=panda.gripper_joint_names(),
-        open_gripper_joint_positions=panda.OPEN_GRIPPER_JOINT_POSITIONS,
-        closed_gripper_joint_positions=panda.CLOSED_GRIPPER_JOINT_POSITIONS,
-        gripper_group_name=panda.MOVE_GROUP_GRIPPER,
+        gripper_joint_names=ur5.gripper_joint_names(),
+        open_gripper_joint_positions=ur5.OPEN_GRIPPER_JOINT_POSITIONS,
+        closed_gripper_joint_positions=ur5.CLOSED_GRIPPER_JOINT_POSITIONS,
+        gripper_group_name=ur5.MOVE_GROUP_GRIPPER,
         callback_group=callback_group,
         follow_joint_trajectory_action_name="gripper_trajectory_controller/follow_joint_trajectory",
         gripper_command_action_name="gripper_action_controller/gripper_cmd",

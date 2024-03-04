@@ -15,7 +15,7 @@ from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
 
 from pymoveit2 import MoveIt2
-from pymoveit2.robots import panda
+from Ur5pymoveit2.pymoveit2.robots import ur5
 
 DEFAULT_EXAMPLE_MESH = path.join(
     path.dirname(path.realpath(__file__)), "assets", "suzanne.stl"
@@ -46,10 +46,10 @@ def main():
     # Create MoveIt 2 interface
     moveit2 = MoveIt2(
         node=node,
-        joint_names=panda.joint_names(),
-        base_link_name=panda.base_link_name(),
-        end_effector_name=panda.end_effector_name(),
-        group_name=panda.MOVE_GROUP_ARM,
+        joint_names=ur5.joint_names(),
+        base_link_name=ur5.base_link_name(),
+        end_effector_name=ur5.end_effector_name(),
+        group_name=ur5.MOVE_GROUP_ARM,
         callback_group=callback_group,
     )
 
