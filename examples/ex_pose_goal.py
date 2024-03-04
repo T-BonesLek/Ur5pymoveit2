@@ -14,6 +14,7 @@ from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
 
 
+
 def main():
     rclpy.init()
 
@@ -21,9 +22,11 @@ def main():
     node = Node("moveit2_example_pose_goal")
 
     # Declare parameters for position and orientation
-    node.declare_parameter("position", [0.5, 0.6, 0.28])
+    node.declare_parameter("position1", [-0.5, 0.5, 0.5])
+    node.declare_parameter("position2", [0.5, 0.5, 0.5])
     node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
     node.declare_parameter("cartesian", True)
+    
 
     # Create callback group that allows execution of callbacks in parallel without restrictions
     callback_group = ReentrantCallbackGroup()
@@ -50,15 +53,22 @@ def main():
     moveit2.max_acceleration = 0.5
 
     # Get parameters
-    position = node.get_parameter("position").get_parameter_value().double_array_value
+    position1 = node.get_parameter("position1").get_parameter_value().double_array_value
+    position2 = node.get_parameter("position2").get_parameter_value().double_array_value
     quat_xyzw = node.get_parameter("quat_xyzw").get_parameter_value().double_array_value
     cartesian = node.get_parameter("cartesian").get_parameter_value().bool_value
 
     # Move to pose
     node.get_logger().info(
-        f"Moving to {{position: {list(position)}, quat_xyzw: {list(quat_xyzw)}}}"
+        f"Moving to {{position: {list(position1)}, quat_xyzw: {list(quat_xyzw)}}}"
     )
-    moveit2.move_to_pose(position=position, quat_xyzw=quat_xyzw, cartesian=cartesian)
+    moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
+    moveit2.wait_until_executed()
+
+    node.get_logger().info(
+        f"Moving to {{position: {list(position2)}, quat_xyzw: {list(quat_xyzw)}}}"
+    )
+    moveit2.move_to_pose(position=position2, quat_xyzw=quat_xyzw, cartesian=cartesian)
     moveit2.wait_until_executed()
 
     rclpy.shutdown()
