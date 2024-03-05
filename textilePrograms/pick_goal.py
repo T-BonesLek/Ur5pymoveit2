@@ -18,10 +18,10 @@ def move_to_pose(pickPose):
     rclpy.init()
 
     # Create node for this example
-    node = Node("moveit2_example_pose_goal")
+    node = Node("moveit2_pose_goal")
 
     # Declare parameters for position and orientation
-    node.declare_parameter("position1", [pickPose, 0.2, 0.2])
+    node.declare_parameter("position1", [0.2, 0.3, 0.2])
     node.declare_parameter("position2", [pickPose, 0.2, -0.1])
     node.declare_parameter("position3", [pickPose, 0.6, -0.1])
     node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
@@ -91,9 +91,9 @@ def move_to_pose(pickPose):
     moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
     moveit2.wait_until_executed()
 
+    executor.shutdown()  # Explicitly stop the executor
     rclpy.shutdown()
     executor_thread.join()
-    exit(0)
 
 if __name__ == "__main__":
     move_to_pose(-0.55)  # Call move_to_pose with pickPose = -0.55
