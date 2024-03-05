@@ -21,12 +21,16 @@ class IOToggleClient(Node):
                 if self.future.done():
                     break
 
-def main(args=None):
-    rclpy.init(args=args)
+
+def toggle_gripper(trigger, args=None):
+    # rclpy.init(args=args)
     io_toggle_client = IOToggleClient()
-    io_toggle_client.send_request([(0, 1.0), (1, 0.0)])  # Set pin 17 to 1.0 and pin 18 to 0.0
+    if trigger == 0:
+        io_toggle_client.send_request([(0, 1.0), (1, 0.0)]) #Close gripper
+    else:
+        io_toggle_client.send_request([(0, 0.0), (1, 1.0)]) #Open gripper
     io_toggle_client.destroy_node()
-    rclpy.shutdown()
+    # rclpy.shutdown()
 
 if __name__ == '__main__':
-    main()
+    toggle_gripper(1)  # Call toggle_gripper with trigger = 0 to close the gripper

@@ -9,24 +9,24 @@ from threading import Thread
 import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
-
+from ex_io_port_toggle import toggle_gripper
 from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
 
 
-
-def main():
+def move_to_pose(pickPose):
     rclpy.init()
 
     # Create node for this example
     node = Node("moveit2_example_pose_goal")
 
     # Declare parameters for position and orientation
-    node.declare_parameter("position1", [-0.5, 0.5, 0.5])
-    node.declare_parameter("position2", [0.5, 0.5, 0.5])
+    node.declare_parameter("position1", [pickPose, 0.2, 0.2])
+    node.declare_parameter("position2", [pickPose, 0.2, -0.1])
+    node.declare_parameter("position3", [pickPose, 0.6, -0.1])
     node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
     node.declare_parameter("cartesian", True)
-    
+
 
     # Create callback group that allows execution of callbacks in parallel without restrictions
     callback_group = ReentrantCallbackGroup()
@@ -55,8 +55,13 @@ def main():
     # Get parameters
     position1 = node.get_parameter("position1").get_parameter_value().double_array_value
     position2 = node.get_parameter("position2").get_parameter_value().double_array_value
+    position3 = node.get_parameter("position3").get_parameter_value().double_array_value
     quat_xyzw = node.get_parameter("quat_xyzw").get_parameter_value().double_array_value
     cartesian = node.get_parameter("cartesian").get_parameter_value().bool_value
+
+
+ # Open the gripper before moving to the first position
+    toggle_gripper(1, moveit2)  # Call toggle_gripper with trigger = 1 to open the gripper
 
     # Move to pose
     node.get_logger().info(
@@ -71,10 +76,24 @@ def main():
     moveit2.move_to_pose(position=position2, quat_xyzw=quat_xyzw, cartesian=cartesian)
     moveit2.wait_until_executed()
 
+    node.get_logger().info(
+        f"Moving to {{position: {list(position3)}, quat_xyzw: {list(quat_xyzw)}}}"
+    )
+    moveit2.move_to_pose(position=position3, quat_xyzw=quat_xyzw, cartesian=cartesian)
+    moveit2.wait_until_executed()
+
+  # Close the gripper after reaching the first position
+    toggle_gripper(0, moveit2)  # Call toggle_gripper with trigger = 0 to close the gripper
+
+    node.get_logger().info(
+        f"Moving to {{position: {list(position1)}, quat_xyzw: {list(quat_xyzw)}}}"
+    )
+    moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
+    moveit2.wait_until_executed()
+
     rclpy.shutdown()
     executor_thread.join()
     exit(0)
 
-
 if __name__ == "__main__":
-    main()
+    move_to_pose(-0.55)  # Call move_to_pose with pickPose = -0.55
