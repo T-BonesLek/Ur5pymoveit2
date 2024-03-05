@@ -9,7 +9,7 @@ from threading import Thread
 import rclpy
 from rclpy.callback_groups import ReentrantCallbackGroup
 from rclpy.node import Node
-from ex_io_port_toggle import toggle_gripper
+from io_port_toggle import toggle_gripper
 from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
 
