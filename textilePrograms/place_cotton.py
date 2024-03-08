@@ -89,8 +89,10 @@ def move_to_place_cotton(standalone=True):
     moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
     moveit2.wait_until_executed()
 
-    rclpy.shutdown()
-    executor_thread.join()
+    if standalone:
+        rclpy.shutdown()
+        print("Stand alone")
+    # executor_thread.join()
 
 
 if __name__ == "__main__":

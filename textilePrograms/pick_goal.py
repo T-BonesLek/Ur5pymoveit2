@@ -95,9 +95,10 @@ def move_to_pose(pickPose, standalone=True):
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
-        if rclpy.ok():  # Check if the context is still valid
-            rclpy.shutdown()  # Shutdown rclpy
-            executor_thread.join()
+        if standalone:
+            rclpy.shutdown()
+            print("Stand alone")
+            # executor_thread.join()
 
 if __name__ == "__main__":
     move_to_pose(-0.55)  # Call move_to_pose with pickPose = -0.55
