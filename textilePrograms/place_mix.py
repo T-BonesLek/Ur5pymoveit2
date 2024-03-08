@@ -14,17 +14,17 @@ from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
 
 
-def move_to_place_cotton(standalone=True):
+def move_to_place_mix(standalone=True):
     if standalone:
         rclpy.init()
 
     # Create node for this example
-    node = Node("moveit2_place_cotton")
+    node = Node("moveit2_place_mix")
 
     # Declare parameters for position and orientation
     node.declare_parameter("position1", [0.3, 0.4, 0.2])
-    node.declare_parameter("position2", [0.5, -0.4, -0.1])
-    node.declare_parameter("position3", [0.5, -0.4, -0.2])
+    node.declare_parameter("position2", [0.3, -0.4, -0.1])
+    node.declare_parameter("position3", [0.3, -0.4, -0.2])
     node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
     node.declare_parameter("cartesian", True)
 
@@ -92,6 +92,5 @@ def move_to_place_cotton(standalone=True):
     rclpy.shutdown()
     executor_thread.join()
 
-
 if __name__ == "__main__":
-    move_to_place_cotton()
+    move_to_place_mix()

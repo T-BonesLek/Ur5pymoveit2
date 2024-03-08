@@ -16,10 +16,12 @@ class IOToggleClient(Node):
             self.req.pin = pin
             self.req.state = state
             self.future = self.client.call_async(self.req)
-            while rclpy.ok():
-                rclpy.spin_once(self)
-                if self.future.done():
-                    break
+            try:
+                # Wait for the future to complete and get the result
+                response = self.future.result()
+                self.get_logger().info('Service call succeeded')
+            except Exception as e:
+                self.get_logger().info('Service call failed %r' % (e,))
 
 
 def toggle_gripper(trigger, args=None):

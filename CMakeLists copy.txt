@@ -3,13 +3,8 @@ project(pymoveit2)
 
 # Find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(ament_cmake_python REQUIRED)
-find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
-
-# Install Python package
-ament_python_install_package(${PROJECT_NAME})
-
+find_package(rosidl_default_generators REQUIRED)
 
 # Install examples
 set(EXAMPLES_DIR examples)
@@ -33,20 +28,23 @@ install(PROGRAMS
     ${textilePrograms_DIR}/place_mix.py
     ${textilePrograms_DIR}/place_wool.py
     ${textilePrograms_DIR}/robotTestPublisher.py
-    ${textilePrograms_DIR}/main.py
-    ${textilePrograms_DIR}/testSub.py
-    ${textilePrograms_DIR}/testPub.py
 
     DESTINATION lib/${PROJECT_NAME}
 )
 
-#Install msg files
-set(msg_DIR msg)
-install(DIRECTORY msg
-    ${msg_DIR}/MaterialPose.msg
-
-    DESTINATION lib/${PROJECT_NAME}
+# Define message files
+set(msg_files
+  "msg/MaterialPose.msg"
 )
+
+# Generate message headers
+rosidl_generate_interfaces(${PROJECT_NAME}
+  ${msg_files}
+  DEPENDENCIES std_msgs
+)
+
+# Export dependencies
+ament_export_dependencies(rosidl_default_runtime)
 
 # Setup the project
 ament_package()

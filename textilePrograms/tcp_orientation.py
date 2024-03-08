@@ -14,18 +14,17 @@ from pymoveit2 import MoveIt2
 from pymoveit2.robots import ur5
 
 
-def move_to_place_cotton(standalone=True):
-    if standalone:
-        rclpy.init()
+def move_to_tcp_orientation(args=None):
+    rclpy.init()
 
     # Create node for this example
-    node = Node("moveit2_place_cotton")
+    node = Node("moveit2_tcp_orientation")
 
     # Declare parameters for position and orientation
-    node.declare_parameter("position1", [0.3, 0.4, 0.2])
-    node.declare_parameter("position2", [0.5, -0.4, -0.1])
-    node.declare_parameter("position3", [0.5, -0.4, -0.2])
-    node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
+    node.declare_parameter("position1", [0.2, 0.3, 0.2])
+    # node.declare_parameter("position2", [0.5, -0.4, -0.1])
+    # node.declare_parameter("position3", [0.5, -0.4, -0.2])
+    node.declare_parameter("quat_xyzw", [1.0, 0.0, 0.0, 0.0])
     node.declare_parameter("cartesian", True)
 
 
@@ -55,8 +54,8 @@ def move_to_place_cotton(standalone=True):
 
     # Get parameters
     position1 = node.get_parameter("position1").get_parameter_value().double_array_value
-    position2 = node.get_parameter("position2").get_parameter_value().double_array_value
-    position3 = node.get_parameter("position3").get_parameter_value().double_array_value
+    # position2 = node.get_parameter("position2").get_parameter_value().double_array_value
+    # position3 = node.get_parameter("position3").get_parameter_value().double_array_value
     quat_xyzw = node.get_parameter("quat_xyzw").get_parameter_value().double_array_value
     cartesian = node.get_parameter("cartesian").get_parameter_value().bool_value
 
@@ -68,30 +67,30 @@ def move_to_place_cotton(standalone=True):
     moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
     moveit2.wait_until_executed()
 
-    node.get_logger().info(
-        f"Moving to {{position: {list(position2)}, quat_xyzw: {list(quat_xyzw)}}}"
-    )
-    moveit2.move_to_pose(position=position2, quat_xyzw=quat_xyzw, cartesian=cartesian)
-    moveit2.wait_until_executed()
+#     node.get_logger().info(
+#         f"Moving to {{position: {list(position2)}, quat_xyzw: {list(quat_xyzw)}}}"
+#     )
+#     moveit2.move_to_pose(position=position2, quat_xyzw=quat_xyzw, cartesian=cartesian)
+#     moveit2.wait_until_executed()
 
-    node.get_logger().info(
-        f"Moving to {{position: {list(position3)}, quat_xyzw: {list(quat_xyzw)}}}"
-    )
-    moveit2.move_to_pose(position=position3, quat_xyzw=quat_xyzw, cartesian=cartesian)
-    moveit2.wait_until_executed()
+#     node.get_logger().info(
+#         f"Moving to {{position: {list(position3)}, quat_xyzw: {list(quat_xyzw)}}}"
+#     )
+#     moveit2.move_to_pose(position=position3, quat_xyzw=quat_xyzw, cartesian=cartesian)
+#     moveit2.wait_until_executed()
 
-  # Close the gripper after reaching the first position
-    toggle_gripper(1, moveit2)  # Call toggle_gripper with trigger = 0 to close the gripper
+#   # Close the gripper after reaching the first position
+#     toggle_gripper(1, moveit2)  # Call toggle_gripper with trigger = 0 to close the gripper
 
-    node.get_logger().info(
-        f"Moving to {{position: {list(position1)}, quat_xyzw: {list(quat_xyzw)}}}"
-    )
-    moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
-    moveit2.wait_until_executed()
+#     node.get_logger().info(
+#         f"Moving to {{position: {list(position1)}, quat_xyzw: {list(quat_xyzw)}}}"
+#     )
+#     moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
+#     moveit2.wait_until_executed()
 
     rclpy.shutdown()
     executor_thread.join()
 
 
 if __name__ == "__main__":
-    move_to_place_cotton()
+    move_to_tcp_orientation()
