@@ -22,10 +22,11 @@ def move_to_pose(pickPose, standalone=True):
         node = Node("moveit2_pose_goal")
 
         # Declare parameters for position and orientation
-        node.declare_parameter("position1", [0.3, 0.4, 0.2])
+        node.declare_parameter("position1", [-0.5, 0.2, 0.2])
         node.declare_parameter("position2", [pickPose, 0.2, -0.1])
         node.declare_parameter("position3", [pickPose, 0.6, -0.1])
         node.declare_parameter("quat_xyzw", [0.0, 1.0, 0.0, 0.0])
+        node.declare_parameter("quat_rotate", [0.0, 1.0, 0.0, 0.0])
         node.declare_parameter("cartesian", True)
 
 
@@ -58,6 +59,7 @@ def move_to_pose(pickPose, standalone=True):
         position2 = node.get_parameter("position2").get_parameter_value().double_array_value
         position3 = node.get_parameter("position3").get_parameter_value().double_array_value
         quat_xyzw = node.get_parameter("quat_xyzw").get_parameter_value().double_array_value
+        quat_rotate = node.get_parameter("quat_rotate").get_parameter_value().double_array_value
         cartesian = node.get_parameter("cartesian").get_parameter_value().bool_value
 
 
@@ -69,6 +71,12 @@ def move_to_pose(pickPose, standalone=True):
             f"Moving to {{position: {list(position1)}, quat_xyzw: {list(quat_xyzw)}}}"
         )
         moveit2.move_to_pose(position=position1, quat_xyzw=quat_xyzw, cartesian=cartesian)
+        moveit2.wait_until_executed()
+
+        node.get_logger().info(
+            f"Moving to {{position: {list(position1)}, quat_rotate: {list(quat_rotate)}}}"
+        )
+        moveit2.move_to_pose(position=position1, quat_xyzw=quat_rotate, cartesian=cartesian)
         moveit2.wait_until_executed()
 
         node.get_logger().info(
@@ -101,7 +109,7 @@ def move_to_pose(pickPose, standalone=True):
             # executor_thread.join()
 
 if __name__ == "__main__":
-    move_to_pose(-0.55)  # Call move_to_pose with pickPose = -0.55
+    move_to_pose(-0.5)  # Call move_to_pose with pickPose = -0.4 to -0.6 is the -x value of the pickPose
 
 
     # executor.shutdown()  # Explicitly stop the executor

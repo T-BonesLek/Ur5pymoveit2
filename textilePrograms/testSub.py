@@ -6,54 +6,73 @@ from place_cotton import move_to_place_cotton
 from place_mix import move_to_place_mix
 from place_wool import move_to_place_wool
 import threading  # Import the threading module
+from geometry_msgs.msg import Point  # Import the Point message type
 
 
 class MySubscriber(Node):
     def __init__(self):
         super().__init__('my_subscriber')
         self.subscription = self.create_subscription(
-            String,  # Specify the message type
+            Point,  # Specify the message type
             'my_robot_topic',  # Specify the topic
             self.listener_callback,  # Specify the callback
             10)  # Specify the queue size
 
     def listener_callback(self, msg):
-        self.get_logger().info('I heard: "%s"' % msg.data)  # Log the received message
-        if msg.data == '1':
-            try:
-                # Start a new thread to run the move_to_place_cotton function
-                threading.Thread(target=self.run_pick_cotton).start()
-            except Exception as e:
-                print(f"An error occurred: {e}")
+        x = msg.x
+        y = msg.y
+        z = msg.z
+        # self.get_logger().info('I heard: "x: %s, y: %s, z: %s"' % (msg.x, msg.y, msg.z))  # Log the received message
+        print('Received message: "x: %s, y: %s, z: %s"' % (msg.x, msg.y, msg.z))  # Print the received message to the terminal
 
-        if msg.data == '2':
-            try:
-                # Start a new thread to run the move_to_place_wool function
-                threading.Thread(target=self.run_pick_wool).start()
-            except Exception as e:
-                print(f"An error occurred: {e}")
+        if y == 1.0:
+            print(x)  # Print the y value of the received message to the terminal
+            if x <= -0.4 and x >= -0.6:
+                try:
+                    # Start a new thread to run the move_to_pose function with the received x and y values
+                    threading.Thread(target=self.run_pick_cotton, args=(x,)).start()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+            else:
+                print("Invalid x value")
 
-        if msg.data == '3':
-            try:
-                # Start a new thread to run the move_to_place_mix function
-                threading.Thread(target=self.run_pick_mix).start()
-            except Exception as e:
-                print(f"An error occurred: {e}")
 
-    def run_pick_cotton(self):
-        move_to_pose(-0.55, False)
+        if y == 2.0:
+            print(x)
+            if x <= -0.4 and x >= -0.6:
+                try:
+                    # Start a new thread to run the move_to_pose function with the received x and y values
+                    threading.Thread(target=self.run_pick_wool, args=(x,)).start()
+                except Exception as e:
+                    print(f"An error occurred: {e}")
+            else:
+                print("Invalid x value")
+
+        if y == 3.0:
+            print(x)
+            if x <= -0.4 and x >= -0.6:
+                try:
+                    # Start a new thread to run the move_to_pose function with the received x and y values
+                    threading.Thread(target=self.run_pick_mix, args=(x,)).start()
+                except Exception as e:
+                    print(f"An error occurred: {e}")    
+            else:
+                print("Invalid x value")
+
+    def run_pick_cotton(self ,x):
+        move_to_pose(x, False)
         print("Pick finished")
         move_to_place_cotton(False)
         print("Place finished")
     
-    def run_pick_wool(self):
-        move_to_pose(-0.55, False)
+    def run_pick_wool(self ,x):
+        move_to_pose(x, False)
         print("Pick finished")
         move_to_place_wool(False)
         print("Place finished")
 
-    def run_pick_mix(self):
-        move_to_pose(-0.55, False)
+    def run_pick_mix(self ,x):
+        move_to_pose(x, False)
         print("Pick finished")
         move_to_place_mix(False)
         print("Place finished")
